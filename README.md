@@ -117,7 +117,7 @@ This project is licensed under the [MIT License](LICENSE).
 ### 📈 Order Execution via cTrader & TV
 
 ![Order Execution](images/order-execution.png)
-![Order Execution](images/tradingview.png)
+ 
 
 ### 📓 Notion Journal Entry
 
