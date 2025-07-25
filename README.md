@@ -105,7 +105,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 🖼️ Screenshots
 
-🧠 GPT Assistant (Frontend UI)
+### 🧠 GPT Assistant (Frontend UI)
 This is the interface of the custom GPT created for Smart Money Concepts trading analysis.
 
 ![ GPT Assistant ](images/gpt-frontend.png)
