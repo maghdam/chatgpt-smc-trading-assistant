@@ -114,9 +114,10 @@ This project is licensed under the [MIT License](LICENSE).
 
 ![ChatGPT Trade Analysis](images/trade-analysis.png)
 
-### 📈 Order Execution via cTrader
+### 📈 Order Execution via cTrader & TV
 
 ![Order Execution](images/order-execution.png)
+![Order Execution](images/tradingview.png)
 
 ### 📓 Notion Journal Entry
 
