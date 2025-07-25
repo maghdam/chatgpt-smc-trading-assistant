@@ -14,7 +14,7 @@ chatgpt-smc-trading-assistant/
 ├── docker-compose.yml      # Launches backend + ngrok
 ├── requirements.txt        # Python dependencies
 ├── credentials.json        # API credentials (not committed)
-├── gpt_instructions.md      # GPT instruction template
+├── gpt_instructions.md     # GPT instruction template
 ├── gpt-schema.yaml         # GPT Action schema (OpenAPI YAML)
 ├── docker_usage_guide.md   # Step-by-step guide for using Docker and Docker Compose with the project
 └── README.md               # Project overview and usage
