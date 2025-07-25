@@ -105,20 +105,31 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 🖼️ Screenshots
 
-### 🔍 GPT Setup
+🧠 GPT Assistant (Frontend UI)
+This is the interface of the custom GPT created for Smart Money Concepts trading analysis.
 
+![ GPT Assistant ](images/gpt-frontend.png)
+
+### 🔍 GPT Setup  (Instructions + Action Schema)
+
+GPT Instruction Configuration
 ![GPT Setup](images/gpt-configuration-instruction.png)
+
+GPT Action Schema Integration
 ![GPT Setup](images/gpt-configuration-action-schema.png)
 
 ### 🧠 Trade Analysis Output
+Live OHLC analysis, SMC element detection, and structured journal suggestion.
 
 ![ChatGPT Trade Analysis](images/trade-analysis.png)
 
-### 📈 Order Execution via cTrader & TV
+### 📈 Order Execution via cTrader
+Automatically places pending or market orders via the FastAPI backend.
 
 ![Order Execution](images/order-execution.png)
  
 
 ### 📓 Notion Journal Entry
+Posts the confirmed trades, with checklist, news context, and chart links into Notion.
 
 ![Notion Entry](images/notion-journal.png)
