@@ -9,7 +9,7 @@ services:
   ngrok:
     image: ngrok/ngrok:latest
     container_name: ngrok
-    entrypoint: ["ngrok", "http", "--log", "stdout", "--authtoken", "30JDqFUmS7DqN3GxZOoHXiK3RMw_4aYuoenxgQC74jqzYZdF7", "ctrader-bot:8000"]
+    entrypoint: ["ngrok", "http", "--log", "stdout", "--authtoken", "<NGROK_TOKEN>", "ctrader-bot:8000"]
     depends_on:
       - ctrader-bot
     ports:
