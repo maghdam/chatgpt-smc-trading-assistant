@@ -67,7 +67,7 @@ git clone https://github.com/yourusername/chatgpt-smc-trading-assistant.git
 cd chatgpt-smc-trading-assistant
 ```
 
-2. \*\*Edit \*\*\`\` with your:
+2. **Edit** with your:
 
    - cTrader clientId, accessToken, accountId
    - ngrok authtoken
@@ -107,8 +107,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 ### 🔍 GPT Setup
 
-![GPT Setup](images/gpt-configuration instruction.png)
-![GPT Setup](images/gpt-configuration action-schema.png)
+![GPT Setup](images/gpt-configuration-instruction.png)
+![GPT Setup](images/gpt-configuration-action-schema.png)
 
 ### 🧠 Trade Analysis Output
 
