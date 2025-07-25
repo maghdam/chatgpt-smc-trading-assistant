@@ -1,0 +1,16 @@
+services:
+  ctrader-bot:
+    build: .
+    container_name: ctrader-bot
+    ports:
+      - "8000:8000"
+    restart: always
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    entrypoint: ["ngrok", "http", "--log", "stdout", "--authtoken", "30JDqFUmS7DqN3GxZOoHXiK3RMw_4aYuoenxgQC74jqzYZdF7", "ctrader-bot:8000"]
+    depends_on:
+      - ctrader-bot
+    ports:
+      - "4040:4040"

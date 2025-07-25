@@ -1,0 +1,245 @@
+openapi: 3.1.0
+info:
+  title: MT5 Market Data API
+  version: 1.1.2
+servers:
+  - url: https://c48ba7f41190.ngrok-free.app
+
+paths:
+  /fetch-data:
+    post:
+      operationId: fetchMarketData
+      summary: Fetch OHLC market data or chart image
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - symbol
+              properties:
+                symbol:
+                  type: string
+                  description: Broker-specific symbol name (e.g., "EURUSD", "EURUSD.a")
+                timeframe:
+                  type: string
+                  default: "M5"
+                  description: Timeframe (e.g., M1, M5, H1, H4, D1)
+                num_bars:
+                  type: integer
+                  default: 500
+                return_chart:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Market data or chart image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  symbol:
+                    type: string
+                  timeframe:
+                    type: string
+                  live_price:
+                    type: number
+                  ohlc:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        time:
+                          type: string
+                        open:
+                          type: number
+                        high:
+                          type: number
+                        low:
+                          type: number
+                        close:
+                          type: number
+                        tick_volume:
+                          type: number
+                  chart_image_base64:
+                    type: string
+        '404':
+          description: Symbol or timeframe not found
+
+  /journal-entry:
+    post:
+      operationId: postJournalEntry
+      summary: Create a journal entry in Notion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - symbol
+                - session
+                - htf_bias
+                - entry_type
+                - entry_price
+                - stop_loss
+                - target_price
+              properties:
+                title:
+                  type: string
+                  description: Title of the journal entry (e.g., "2025-07-20 NY")
+                symbol:
+                  type: string
+                  description: Trading symbol (e.g., "EURUSD")
+                session:
+                  type: string
+                  description: Session of trade (e.g., London, NY)
+                htf_bias:
+                  type: string
+                  description: High timeframe trend bias
+                entry_type:
+                  type: string
+                  description: Entry type (e.g., FVG retest, OB flip)
+                entry_price:
+                  type: number
+                  description: Entry price level
+                stop_loss:
+                  type: number
+                  description: Stop loss price
+                target_price:
+                  type: number
+                  description: Take-profit target price
+                order_type:
+                  type: string
+                  description: Suggested order type (e.g., Market, Buy Limit, Sell Stop)
+                note:
+                  type: string
+                  nullable: true
+                  description: Additional note for the trade (e.g., news impact, session behavior)
+                checklist:
+                  type: string
+                  nullable: true
+                  description: Summary of SMC checklist items (e.g., CHOCH detected, OB valid)
+                news_events:
+                  type: string
+                  nullable: true
+                  description: Economic event summary (e.g., "USD NFP released at 13:30 UTC")
+                chart_url:
+                  type: string
+                  nullable: true
+                  description: Optional URL of chart image to attach in Notion media
+      responses:
+        '200':
+          description: Journal entry created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Error while creating journal entry
+
+  /open-positions:
+    get:
+      operationId: getOpenPositions
+      summary: Retrieve currently open positions from cTrader
+      responses:
+        '200':
+          description: List of open positions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  positions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        symbol_name:
+                          type: string
+                        position_id:
+                          type: integer
+                        direction:
+                          type: string
+                        entry_price:
+                          type: number
+                        stop_loss:
+                          type: number
+                          nullable: true
+                        take_profit:
+                          type: number
+                          nullable: true
+                        volume_lots:
+                          type: number
+                        volume_units:
+                          type: integer
+                        unrealized_profit_chf:
+                          type: number
+                        timestamp_utc:
+                          type: string
+                        timestamp_local:
+                          type: string
+        '500':
+          description: Failed to retrieve open positions
+
+  /place-order:
+    post:
+      operationId: placeOrder
+      summary: Execute a trade order on cTrader
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - symbol
+                - order_type
+                - direction
+                - volume
+              properties:
+                symbol:
+                  type: string
+                  description: Trading symbol (e.g., "EURUSD")
+                order_type:
+                  type: string
+                  enum: [MARKET, LIMIT, STOP]
+                  description: Type of order to place
+                direction:
+                  type: string
+                  enum: [BUY, SELL]
+                  description: Direction of the trade
+                volume:
+                  type: number
+                  description: Trade volume in lots (e.g., 1.0 for 100,000 units)
+                entry_price:
+                  type: number
+                  description: Entry price (required for LIMIT/STOP orders)
+                stop_loss:
+                  type: number
+                  description: Stop loss price (optional)
+                take_profit:
+                  type: number
+                  description: Take profit price (optional)
+      responses:
+        '200':
+          description: Trade executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  order_id:
+                    type: integer
+        '400':
+          description: Invalid order parameters
+        '500':
+          description: Server error during order execution
