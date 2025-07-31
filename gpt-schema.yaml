@@ -1,0 +1,341 @@
+openapi: 3.1.0
+info:
+  title: Ctrader OpenApi Market Data  
+  version: 1.1.2
+servers:
+  - url: https://4ac7e6f60b00.ngrok-free.app
+
+paths:
+  /fetch-data:
+    post:
+      operationId: fetchMarketData
+      summary: Fetch OHLC market data or chart image
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - symbol
+              properties:
+                symbol:
+                  type: string
+                  description: Broker-specific symbol name (e.g., "EURUSD", "EURUSD.a")
+                timeframe:
+                  type: string
+                  default: "M5"
+                  description: Timeframe (e.g., M1, M5, H1, H4, D1)
+                num_bars:
+                  type: integer
+                  default: 500
+                return_chart:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Market data or chart image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  symbol:
+                    type: string
+                  timeframe:
+                    type: string
+                  live_price:
+                    type: number
+                  ohlc:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        time:
+                          type: string
+                        open:
+                          type: number
+                        high:
+                          type: number
+                        low:
+                          type: number
+                        close:
+                          type: number
+                        tick_volume:
+                          type: number
+                  chart_image_base64:
+                    type: string
+        '404':
+          description: Symbol or timeframe not found
+
+  /journal-entry:
+    post:
+      operationId: postJournalEntry
+      summary: Create a journal entry in Notion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - symbol
+                - session
+                - htf_bias
+                - entry_type
+                - entry_price
+                - stop_loss
+                - target_price
+              properties:
+                title:
+                  type: string
+                symbol:
+                  type: string
+                session:
+                  type: string
+                htf_bias:
+                  type: string
+                entry_type:
+                  type: string
+                entry_price:
+                  type: number
+                stop_loss:
+                  type: number
+                target_price:
+                  type: number
+                order_type:
+                  type: string
+                note:
+                  type: string
+                  nullable: true
+                checklist:
+                  type: string
+                  nullable: true
+                news_events:
+                  type: string
+                  nullable: true
+                chart_url:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Journal entry created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '500':
+          description: Error while creating journal entry
+
+  /open-positions:
+    get:
+      operationId: getOpenPositions
+      summary: Retrieve currently open positions from cTrader
+      responses:
+        '200':
+          description: List of open positions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  positions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        symbol_name:
+                          type: string
+                        position_id:
+                          type: integer
+                        direction:
+                          type: string
+                        entry_price:
+                          type: number
+                        stop_loss:
+                          type: number
+                          nullable: true
+                        take_profit:
+                          type: number
+                          nullable: true
+                        volume_lots:
+                          type: number
+                        volume_units:
+                          type: integer
+                        unrealized_profit_chf:
+                          type: number
+                        timestamp_utc:
+                          type: string
+                        timestamp_local:
+                          type: string
+        '500':
+          description: Failed to retrieve open positions
+
+  /place-order:
+    post:
+      operationId: placeOrder
+      summary: Execute a trade order on cTrader
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - symbol
+                - order_type
+                - direction
+                - volume
+              properties:
+                symbol:
+                  type: string
+                order_type:
+                  type: string
+                  enum: [MARKET, LIMIT, STOP]
+                direction:
+                  type: string
+                  enum: [BUY, SELL]
+                volume:
+                  type: number
+                entry_price:
+                  type: number
+                stop_loss:
+                  type: number
+                take_profit:
+                  type: number
+      responses:
+        '200':
+          description: Trade executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  order_id:
+                    type: integer
+        '400':
+          description: Invalid order parameters
+        '500':
+          description: Server error during order execution
+
+  /tag-sessions:
+    post:
+      operationId: tagSessions
+      summary: Add session labels to OHLC candles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                candles:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - time
+                      - open
+                      - high
+                      - low
+                      - close
+                      - volume
+                    properties:
+                      time:
+                        type: string
+                        format: date-time
+                      open:
+                        type: number
+                      high:
+                        type: number
+                      low:
+                        type: number
+                      close:
+                        type: number
+                      volume:
+                        type: integer
+              required:
+                - candles
+      responses:
+        '200':
+          description: Session-labeled OHLC candles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    time:
+                      type: string
+                      format: date-time
+                    open:
+                      type: number
+                    high:
+                      type: number
+                    low:
+                      type: number
+                    close:
+                      type: number
+                    volume:
+                      type: integer
+                    session:
+                      type: string
+                      enum:
+                        - Asia
+                        - London
+                        - NewYork
+                        - PostNY
+                        - Unknown
+
+
+  /pending-orders:
+    get:
+      operationId: getPendingOrders
+      summary: Retrieve currently pending limit/stop orders from cTrader
+      responses:
+        '200':
+          description: List of pending orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        order_id:
+                          type: integer
+                        symbol_id:
+                          type: integer
+                        symbol_name:
+                          type: string
+                        direction:
+                          type: string
+                          enum: [buy, sell]
+                        order_type:
+                          type: string
+                          enum: [LIMIT, STOP]
+                        entry_price:
+                          type: number
+                          nullable: true
+                        stop_loss:
+                          type: number
+                          nullable: true
+                        take_profit:
+                          type: number
+                          nullable: true
+                        volume:
+                          type: number
+                        creation_time:
+                          type: string
+        '500':
+          description: Failed to retrieve pending orders

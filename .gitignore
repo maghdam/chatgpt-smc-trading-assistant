@@ -1,0 +1,57 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+
+# Environment files
+.env
+*.env
+
+# Credentials
+credentials.json
+*.key
+*.pem
+*.crt
+
+# Docker
+*.pid
+*.log
+docker-compose.override.yml
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Jupyter Notebooks (if used)
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Build / dist
+build/
+dist/
+*.egg-info/
+
+# PyInstaller
+*.spec
+
+# Coverage / test
+.coverage
+htmlcov/
+.cache/
+pytest_cache/
+
+# Logs
+logs/
+*.log
+
+# Others
+*.bak
+*.swp

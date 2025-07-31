@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+notion-client
+ctrader-open-api
+twisted
+service_identity
+python-dotenv
