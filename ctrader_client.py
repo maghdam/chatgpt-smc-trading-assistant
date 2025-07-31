@@ -21,21 +21,23 @@ from ctrader_open_api.messages.OpenApiModelMessages_pb2 import (
 from twisted.internet import reactor
 from datetime import datetime, timezone, timedelta
 import calendar, time, threading, json
+import os
+from dotenv import load_dotenv
 
 
 
 
+# ── Ctrader-Openapi credentials & client ───────────────────────────────────────────────────
+load_dotenv()
 
-# ── credentials & client ───────────────────────────────────────────────────
-with open("credentials.json") as f:
-    creds = json.load(f)
+CLIENT_ID = os.getenv("CTRADER_CLIENT_ID")
+CLIENT_SECRET = os.getenv("CTRADER_CLIENT_SECRET")
+ACCESS_TOKEN = os.getenv("CTRADER_ACCESS_TOKEN")
+ACCOUNT_ID = int(os.getenv("CTRADER_ACCOUNT_ID"))
+HOST_TYPE = os.getenv("CTRADER_HOST_TYPE")
 
-CLIENT_ID     = creds["ClientId"]
-CLIENT_SECRET = creds["Secret"]
-ACCOUNT_ID    = creds["AccountId"]
-ACCESS_TOKEN  = creds["AccessToken"]
 
-host   = EndPoints.PROTOBUF_LIVE_HOST if creds["HostType"].lower() == "live" else EndPoints.PROTOBUF_DEMO_HOST
+host = EndPoints.PROTOBUF_LIVE_HOST if HOST_TYPE.lower() == "live" else EndPoints.PROTOBUF_DEMO_HOST
 client = Client(host, EndPoints.PROTOBUF_PORT, TcpProtocol)
 
 # ── symbol maps ────────────────────────────────────────────────────────────
