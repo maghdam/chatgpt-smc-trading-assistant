@@ -1,9 +1,9 @@
 openapi: 3.1.0
 info:
-  title: MT5 Market Data API
+  title: Ctrader OpenApi Market Data  
   version: 1.1.2
 servers:
-  - url: https://c48ba7f41190.ngrok-free.app
+  - url: https://4ac7e6f60b00.ngrok-free.app
 
 paths:
   /fetch-data:
@@ -90,47 +90,34 @@ paths:
               properties:
                 title:
                   type: string
-                  description: Title of the journal entry (e.g., "2025-07-20 NY")
                 symbol:
                   type: string
-                  description: Trading symbol (e.g., "EURUSD")
                 session:
                   type: string
-                  description: Session of trade (e.g., London, NY)
                 htf_bias:
                   type: string
-                  description: High timeframe trend bias
                 entry_type:
                   type: string
-                  description: Entry type (e.g., FVG retest, OB flip)
                 entry_price:
                   type: number
-                  description: Entry price level
                 stop_loss:
                   type: number
-                  description: Stop loss price
                 target_price:
                   type: number
-                  description: Take-profit target price
                 order_type:
                   type: string
-                  description: Suggested order type (e.g., Market, Buy Limit, Sell Stop)
                 note:
                   type: string
                   nullable: true
-                  description: Additional note for the trade (e.g., news impact, session behavior)
                 checklist:
                   type: string
                   nullable: true
-                  description: Summary of SMC checklist items (e.g., CHOCH detected, OB valid)
                 news_events:
                   type: string
                   nullable: true
-                  description: Economic event summary (e.g., "USD NFP released at 13:30 UTC")
                 chart_url:
                   type: string
                   nullable: true
-                  description: Optional URL of chart image to attach in Notion media
       responses:
         '200':
           description: Journal entry created successfully
@@ -206,27 +193,20 @@ paths:
               properties:
                 symbol:
                   type: string
-                  description: Trading symbol (e.g., "EURUSD")
                 order_type:
                   type: string
                   enum: [MARKET, LIMIT, STOP]
-                  description: Type of order to place
                 direction:
                   type: string
                   enum: [BUY, SELL]
-                  description: Direction of the trade
                 volume:
                   type: number
-                  description: Trade volume in lots (e.g., 1.0 for 100,000 units)
                 entry_price:
                   type: number
-                  description: Entry price (required for LIMIT/STOP orders)
                 stop_loss:
                   type: number
-                  description: Stop loss price (optional)
                 take_profit:
                   type: number
-                  description: Take profit price (optional)
       responses:
         '200':
           description: Trade executed successfully
@@ -243,3 +223,119 @@ paths:
           description: Invalid order parameters
         '500':
           description: Server error during order execution
+
+  /tag-sessions:
+    post:
+      operationId: tagSessions
+      summary: Add session labels to OHLC candles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                candles:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - time
+                      - open
+                      - high
+                      - low
+                      - close
+                      - volume
+                    properties:
+                      time:
+                        type: string
+                        format: date-time
+                      open:
+                        type: number
+                      high:
+                        type: number
+                      low:
+                        type: number
+                      close:
+                        type: number
+                      volume:
+                        type: integer
+              required:
+                - candles
+      responses:
+        '200':
+          description: Session-labeled OHLC candles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    time:
+                      type: string
+                      format: date-time
+                    open:
+                      type: number
+                    high:
+                      type: number
+                    low:
+                      type: number
+                    close:
+                      type: number
+                    volume:
+                      type: integer
+                    session:
+                      type: string
+                      enum:
+                        - Asia
+                        - London
+                        - NewYork
+                        - PostNY
+                        - Unknown
+
+
+  /pending-orders:
+    get:
+      operationId: getPendingOrders
+      summary: Retrieve currently pending limit/stop orders from cTrader
+      responses:
+        '200':
+          description: List of pending orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        order_id:
+                          type: integer
+                        symbol_id:
+                          type: integer
+                        symbol_name:
+                          type: string
+                        direction:
+                          type: string
+                          enum: [buy, sell]
+                        order_type:
+                          type: string
+                          enum: [LIMIT, STOP]
+                        entry_price:
+                          type: number
+                          nullable: true
+                        stop_loss:
+                          type: number
+                          nullable: true
+                        take_profit:
+                          type: number
+                          nullable: true
+                        volume:
+                          type: number
+                        creation_time:
+                          type: string
+        '500':
+          description: Failed to retrieve pending orders

@@ -16,6 +16,13 @@ from twisted.internet import reactor
 import threading
 from ctrader_client import ACCOUNT_ID
 import time
+from typing import List, Literal
+from datetime import datetime
+from typing import List
+from fastapi import  APIRouter
+from ctrader_client import is_forex_symbol
+import os
+from dotenv import load_dotenv
 
 
 app = FastAPI()
@@ -30,9 +37,66 @@ async def start_ctrader():
 
 
 # 🧠 Notion config
-NOTION_SECRET = "your_notion_secret_key_here"
-NOTION_DB_ID = "your_notion_database_id_here"
+load_dotenv()  # ⬅️ This loads variables from .env file
+
+NOTION_SECRET = os.getenv("NOTION_SECRET")
+NOTION_DB_ID = os.getenv("NOTION_DB_ID")
 notion = NotionClient(auth=NOTION_SECRET)
+
+
+class Candle(BaseModel):
+    time: str
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+
+class SessionCandle(Candle):
+    session: Literal["Asia", "London", "NewYork", "PostNY", "Unknown"]
+
+
+def label_session(utc_iso_time: str) -> str:
+    dt = datetime.fromisoformat(utc_iso_time.replace("Z", "+00:00"))
+    hour = dt.hour
+    if 0 <= hour < 7:
+        return "Asia"
+    elif 7 <= hour < 12:
+        return "London"
+    elif 12 <= hour < 17:
+        return "NewYork"
+    elif 17 <= hour < 24:
+        return "PostNY"
+    return "Unknown"
+
+
+
+
+
+class Candle(BaseModel):
+    time: str
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+
+class CandleList(BaseModel):
+    candles: List[Candle]
+
+class SessionCandle(Candle):
+    session: str
+
+@app.post("/tag-sessions")
+async def tag_sessions(data: CandleList):
+    try:
+        return [
+            SessionCandle(**c.dict(), session=label_session(c.time))
+            for c in data.candles
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # 📦 Data Request Schema
 class FetchDataRequest(BaseModel):
@@ -159,19 +223,29 @@ def execute_trade(order: PlaceOrderRequest):
         symbol_id = symbol_name_to_id[symbol_key]
 
         print(f"[ORDER DEBUG] Sending order: {order=}, {symbol_id=}")
+        
+        # 🔄 Normalize volume
+        # 🔄 Normalize volume
+        volume_raw = int(order.volume)  # assume raw units passed from frontend (e.g. 1 lot = 10_000_000 for Forex)
+
+
+
+        # Submit order
         deferred = place_order(
             client=client,
             account_id=ACCOUNT_ID,
             symbol_id=symbol_id,
             order_type=order.order_type,
             side=order.direction,
-            volume=order.volume,
+            volume=volume_raw,
             price=order.entry_price,
             stop_loss=order.stop_loss,
             take_profit=order.take_profit
         )
 
-        result = wait_for_deferred(deferred, timeout=10)
+
+
+        result = wait_for_deferred(deferred, timeout=12)
 
         if isinstance(result, str):
             result = {"message": result}
@@ -194,6 +268,19 @@ def execute_trade(order: PlaceOrderRequest):
 async def stop_ctrader():
     if reactor.running:
         reactor.stop()
+
+
+# 🔄 Pending Orders
+@app.get("/pending-orders")
+async def pending_orders():
+    try:
+        from ctrader_client import get_pending_orders
+        return get_pending_orders()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
 
 if __name__ == "__main__":
     import uvicorn

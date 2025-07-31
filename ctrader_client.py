@@ -22,6 +22,10 @@ from twisted.internet import reactor
 from datetime import datetime, timezone, timedelta
 import calendar, time, threading, json
 
+
+
+
+
 # ── credentials & client ───────────────────────────────────────────────────
 with open("credentials.json") as f:
     creds = json.load(f)
@@ -159,7 +163,14 @@ def get_open_positions():
     pos_ready.wait(5)
     return open_positions
 
-# ── core: place_order ──────────────────────────────────────────────────────
+
+def is_forex_symbol(symbol: str) -> bool:
+    """Basic rule: treat majors as Forex; expand this set if needed."""
+    return symbol.upper() in {
+        "EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "NZDUSD", "USDCHF", "USDCAD",
+        "EURJPY", "EURGBP", "GBPJPY"
+    }
+
 # ── core: place_order ──────────────────────────────────────────────────────
 def place_order(
     *, client, account_id, symbol_id,
@@ -173,8 +184,9 @@ def place_order(
         symbolId=symbol_id,
         orderType=ProtoOAOrderType.Value(order_type.upper()),
         tradeSide=ProtoOATradeSide.Value(side.upper()),
-        volume=int(volume * 10_000_000),
+        volume=int(volume),  # ✅ FIXED: Pass native volume units directly
     )
+
 
     # -------- absolute price fields are now plain floats ------------------
     if order_type.upper() == "LIMIT":
@@ -205,13 +217,14 @@ def place_order(
         f"[DEBUG] Sending order: {order_type=} {side=} "
         f"price={price} SL={stop_loss} TP={take_profit}"
     )
-    d = client.send(req, client_msg_id=client_msg_id)
+    d = client.send(req, client_msg_id=client_msg_id, timeout=12)
 
     # legacy patch after MARKET fill (unchanged)
-    if order_type.upper() == "MARKET" and isinstance(stop_loss, float) and stop_loss > 1:
-        def _after_fill(_):
-            time.sleep(2)
-            for p in get_open_positions():
+    if order_type.upper() == "MARKET":
+        def _delayed_sltp(_):
+            time.sleep(8)
+            open_pos = get_open_positions()
+            for p in open_pos:
                 if (
                     p["symbol_name"].upper() == symbol_map[symbol_id].upper()
                     and p["direction"].upper() == side.upper()
@@ -224,7 +237,8 @@ def place_order(
                         take_profit=take_profit,
                     )
             return {"status": "position_not_found"}
-        d.addCallback(_after_fill)
+        d.addCallback(_delayed_sltp)
+
 
     return d
 
@@ -254,21 +268,50 @@ def wait_for_deferred(d, timeout=10):
     evt.wait(timeout)
     return box.get("r") or {"status": "failed", "error": str(box.get("f"))}
 
+
+
 def get_pending_orders():
-    request = ProtoOAReconcileReq()
-    request.ctidTraderAccountId = ACCOUNT_ID
+    from ctrader_open_api.messages.OpenApiModelMessages_pb2 import ProtoOAOrderType, ProtoOATradeSide
 
     result_ready = threading.Event()
-    orders = []
+    pending_orders = []
 
     def callback(response):
         res = Protobuf.extract(response)
-        orders.extend(res.order)  # only pending orders
+
+        for o in res.order:
+            order_type = "LIMIT" if o.orderType == ProtoOAOrderType.LIMIT else "STOP"
+            direction = "buy" if o.tradeData.tradeSide == ProtoOATradeSide.BUY else "sell"
+
+            entry_price = None
+            if hasattr(o, "limitPrice"):
+                entry_price = o.limitPrice / 100000
+            elif hasattr(o, "stopPrice"):
+                entry_price = o.stopPrice / 100000
+
+            symbol_id = o.tradeData.symbolId
+            timestamp_ms = getattr(o, "orderTimestamp", None) or getattr(o, "lastUpdateTimestamp", 0)
+            pending_orders.append({
+                "order_id": o.orderId,
+                "symbol_id": symbol_id,
+                "symbol_name": symbol_map.get(symbol_id, str(symbol_id)),
+                "direction": direction,
+                "order_type": order_type,
+                "entry_price": entry_price,
+                "stop_loss": getattr(o, "stopLoss", None),
+                "take_profit": getattr(o, "takeProfit", None),
+                "volume": o.tradeData.volume,
+
+                "creation_time": datetime.utcfromtimestamp(timestamp_ms / 1000).isoformat()
+
+            })
+
         result_ready.set()
 
-    d = client.send(request)
+    req = ProtoOAReconcileReq(ctidTraderAccountId=ACCOUNT_ID)
+    d = client.send(req)
     d.addCallbacks(callback, on_error)
-    result_ready.wait(timeout=5)
+    result_ready.wait(timeout=12)
 
-    return orders
+    return {"orders": pending_orders}
 

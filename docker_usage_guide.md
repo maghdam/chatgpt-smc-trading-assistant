@@ -140,6 +140,7 @@ NGROK_AUTHTOKEN=your_token_here
 
 ```
 http://localhost:8000/docs
+http://localhost:8000/redoc
 ```
 
 ---
