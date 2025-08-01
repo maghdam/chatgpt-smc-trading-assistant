@@ -111,7 +111,16 @@ GPT Action Schema Integration
 
 ## Example Natural Language Queries
 
-
+- Scan my 6-symbol list — EURUSD, NAS100, XAUUSD, GBPUSD, US30, BTCUSD — and give me the top 2–3 instruments showing the best SMC setups for today. Focus on clean structure, HTF alignment, and actionable intraday zones.
+- Analyze EURUSD for a swing trade setup
+- Reevaluate my EURUSD open position
+- Is my EURUSD trade still valid?
+- Should I move SL to breakeven on EURUSD?
+- Are there any major news events today?
+- What’s the macro outlook for EUR/USD this week?
+- Update me on any SMC confluence for EURUSD 
+- Return all opened positions
+- Return all pending oders
 
 
 
