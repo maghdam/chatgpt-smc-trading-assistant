@@ -89,17 +89,6 @@ In ChatGPT Plus:
 - In **Actions → Schema**, paste content of `schemayaml.txt`
 - Save and start chatting with your GPT trading assistant
 
----
-
-## ⚠️ Disclaimer
-
-> This project is intended for **educational and learning purposes only**. Do **not** use it for real trading with live money. Always test with **demo accounts** as shown in the examples. Trading involves significant risk.
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ---
 
@@ -118,10 +107,91 @@ GPT Instruction Configuration
 GPT Action Schema Integration
 ![GPT Setup](images/gpt-configuration-action-schema.png)
 
+
+
+## Example Natural Language Queries
+
+
+
+
+
+## Example Outputs
+
+### EURUSD: Smart Money Concepts (SMC) Analysis
+
+---
+
+### 🔷 HTF Bias: Bullish
+
+* **D1** has been consistently printing higher highs and higher lows from mid-June.
+* Recent pullback respected prior demand zone (around 1.159–1.162), suggesting continuation potential.
+
+### 🔶 MTF Zones (H4)
+
+* **Bullish structure remains intact**, with a recent pullback into demand near 1.17400.
+* There’s a **retest of a bullish OB** (H4 demand from 1.1730–1.1755).
+* Multiple rejections from the 1.1730s confirming strong demand.
+
+### 🟢 LTF Entry (M15): Confirmed
+
+* LTF shows **liquidity sweep** below intra-session low at 1.1737, followed by strong bullish candles.
+* Price reclaimed 1.1750 level with a potential **FVG entry** around 1.1744–1.1748.
+* Clean upside candle structure with minor pullbacks — suggesting building momentum.
+
+---
+
+### ✅ SMC Checklist
+
+* **CHOCH**: ✅ (M15 bullish CHOCH above 1.1755)
+* **OB**: ✅ (H4 demand OB 1.1730–1.1755)
+* **FVG**: ✅ (M15 FVG 1.1744–1.1748)
+* **Sweep**: ✅ (LTF swept liquidity under 1.1737)
+* **Candle Confirmations**: ✅ (Bullish engulfing and follow-through on M15)
+
+---
+
+### 📓 News & Events
+
+* No high-impact USD or EUR events within the current 24h window (checked via Investing.com)
+* Next notable USD macro event is tomorrow: **US Core PCE release**
+
+---
+
+### 🧠 Final Tip
+
+* This setup offers a strong long opportunity with confluence from HTF to LTF.
+* A tight SL below the sweep (1.1730) and target near HTF resistance (1.1825) gives a good R\:R.
+
+---
+
+### 📟 Suggested Trade Journal Entry
+
+| Field            | Value                                         |
+| ---------------- | --------------------------------------------- |
+| **Title**        | 2025-07-25 EURUSD NY                          |
+| **Symbol**       | EURUSD                                        |
+| **Session**      | NY                                            |
+| **HTF Bias**     | Bullish                                       |
+| **Entry Type**   | FVG Retest + OB                               |
+| **Entry Price**  | 1.17460                                       |
+| **Stop Loss**    | 1.17280                                       |
+| **Target Price** | 1.18250                                       |
+| **Order Type**   | Buy Limit                                     |
+| **Note**         | LTF liquidity sweep + FVG fill inside H4 OB   |
+| **Checklist**    | CHOCH ✅, OB ✅, FVG ✅, Sweep ✅, Candle Conf. ✅ |
+| **News Events**  | US Core PCE release tomorrow (USD)            |
+
+
+
+Would you like a visual SMC chart for this setup?
+
+
 ### 🧠 Trade Analysis Output
 Live OHLC analysis, SMC element detection, and structured journal suggestion.
 
 ![ChatGPT Trade Analysis](images/trade-analysis.png)
+
+Would you like me to journal this or place the trade?
 
 ### 📈 Order Execution via cTrader
 Automatically places pending or market orders via the FastAPI backend.
@@ -133,3 +203,17 @@ Automatically places pending or market orders via the FastAPI backend.
 Posts the confirmed trades, with checklist, news context, and chart links into Notion.
 
 ![Notion Entry](images/notion-journal.png)
+
+
+
+---
+
+## ⚠️ Disclaimer
+
+> This project is intended for **educational and learning purposes only**. Do **not** use it for real trading with live money. Always test with **demo accounts** as shown in the examples. Trading involves significant risk.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
