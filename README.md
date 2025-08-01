@@ -31,6 +31,29 @@ chatgpt-smc-trading-assistant/
 └── README.md               # Project overview and usage
 ```
 
+### 📌 Strategy Customization – Create Your Own Logic
+
+This assistant is **strategy-agnostic** — you're not limited to Smart Money Concepts (SMC).
+
+You can define and run **any trading strategy** simply by rewriting the prompt instructions.
+
+#### ✍️ How to Create a New Strategy
+
+1. Open **ChatGPT → My GPTs**
+2. Select your GPT (e.g., `SMC Swing Trading cTrader`)
+3. Click **Edit GPT → Configure**
+4. In the **Instructions** field:
+   - Replace the existing SMC prompt with your own strategy guide
+   - Describe how the GPT should analyze OHLC and chart image inputs
+   - Specify what to detect (e.g., trend direction, breakout signals, RSI divergence, etc.)
+   - Define entry/exit rules (market/pending orders, SL/TP logic, filters)
+
+> 💡 **Example**:  
+> “Use Fibonacci retracement zones (0.5–0.618) combined with bullish MACD crossovers to identify long entries. Confirm structure with higher-timeframe trend direction. Return: signal, SL, TP, and confidence.”
+
+Once saved, the GPT will analyze live data from cTrader and generate trading decisions **based on your strategy logic** — no additional code needed.
+
+
 ---
 
 ## 🧠 Project Overview
