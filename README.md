@@ -1,16 +1,34 @@
-# 📊 ChatGPT SMC Trading Assistant with cTrader API
+# 📊 ChatGPT Trading Strategy Assistant with cTrader API
 
-A fully automated trading assistant powered by ChatGPT and Smart Money Concepts (SMC), designed to execute trades in Forex, indices, and stocks using plain human language.
+A fully automated and extensible trading assistant powered by ChatGPT — capable of analyzing, journaling, and executing trades in Forex, indices, and stocks using natural language.
 
-This intelligent system integrates the cTrader Open API, a FastAPI backend, and Docker, delivering a seamless end-to-end pipeline—from real-time analysis to trade execution—through a single conversational interface.
+This framework integrates the **cTrader Open API**, a **FastAPI backend**, and **Docker**, delivering a seamless end-to-end trading pipeline — from market analysis to order placement — all controlled through conversation.
+
+🧠 **Currently configured to run a Smart Money Concepts (SMC)** strategy out of the box.  
+🛠️ You can easily adapt it to **any strategy** by modifying the ChatGPT instructions.
+
+---
 
 ## 🔑 Key Features
-- Strategy-Agnostic Design: Just modify the prompt instructions—ChatGPT adapts to any trading strategy you define.
-- Advanced SMC Market Analysis: Understand price action, structure shifts, liquidity sweeps, FVGs, OBs, and more.
-- Trade Journaling: Automatically log trades to Notion, complete with structured fields, charts, checklists, and economic context.
-- Order Execution: Place and manage market, limit, and stop orders using plain English.
-- Multilingual Support: Works in English, French, Spanish, and any language ChatGPT supports.
-- Live Market Sync: Continuously monitors price feeds and executes logic in real time.
+
+- **Strategy-Agnostic Design**  
+  Define your own rules — just update the ChatGPT prompt instructions, and the assistant adapts accordingly.
+
+- **Advanced SMC Market Analysis**  
+  Detects CHOCH, BOS, FVGs, OBs, liquidity sweeps, and premium/discount zones.
+
+- **Trade Journaling**  
+  Automatically logs trades to Notion with structured metadata, SMC checklists, and chart snapshots.
+
+- **Order Execution**  
+  Places market, limit, and stop orders in real time using plain English.
+
+- **Multilingual Support**  
+  Works in English, French, Spanish, and any language ChatGPT understands.
+
+- **Live Market Sync**  
+  Fetches price data and executes logic live through the cTrader Open API.
+
 
 
 ---
