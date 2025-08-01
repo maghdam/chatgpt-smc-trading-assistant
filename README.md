@@ -1,6 +1,17 @@
 # 📊 ChatGPT SMC Trading Assistant with cTrader API
 
-This project builds a **Smart Money Concepts (SMC)** trading assistant by combining a custom GPT with a Python-based FastAPI backend. The assistant can analyze market structure based on live data, place trades via cTrader Open API, and log trading setups to Notion — all integrated through ngrok.
+A fully automated trading assistant powered by ChatGPT and Smart Money Concepts (SMC), designed to execute trades in Forex, indices, and stocks using plain human language.
+
+This intelligent system integrates the cTrader Open API, a FastAPI backend, and Docker, delivering a seamless end-to-end pipeline—from real-time analysis to trade execution—through a single conversational interface.
+
+## 🔑 Key Features
+- Strategy-Agnostic Design: Just modify the prompt instructions—ChatGPT adapts to any trading strategy you define.
+- Advanced SMC Market Analysis: Understand price action, structure shifts, liquidity sweeps, FVGs, OBs, and more.
+- Trade Journaling: Automatically log trades to Notion, complete with structured fields, charts, checklists, and economic context.
+- Order Execution: Place and manage market, limit, and stop orders using plain English.
+- Multilingual Support: Works in English, French, Spanish, and any language ChatGPT supports.
+- Live Market Sync: Continuously monitors price feeds and executes logic in real time.
+
 
 ---
 
