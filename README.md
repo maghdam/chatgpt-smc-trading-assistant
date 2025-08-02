@@ -104,13 +104,36 @@ This assistant enables end-to-end automation of Smart Money Concepts trading:
 ### ✅ Requirements
 - Python 3.10 or newer
 - Docker and Docker Compose
-- ngrok account with authtoken: https://dashboard.ngrok.com/get-started/setup/windows
+- Cloud for deploying FastAPI backend like Render (or Fly.io)
 - Demo cTrader broker account (such as IC Markets or Pepperstone)
 - OpenApi account: https://connect.spotware.com/apps
 - OpenAI ChatGPT Plus subscription
 - Notion account with integration enabled: https://www.notion.so/profile/integrations
 
-### 📦 Installation
+
+### 🌐 Deployment and Integration
+
+#### 🧠 1. Deploy Backend on Render (or Fly.io)
+
+Render makes it easy to deploy your FastAPI backend:
+- Push code to GitHub
+- Connect repo to Render
+- Set environment variables manually (from your local .env)
+- Get a permanent public URL (e.g. https://your-service.onrender.com)
+
+
+#### 🤩 2. Connect Backend to ChatGPT
+- Inside ChatGPT Plus:
+- Go to Explore GPTs → Create → Configure
+- In Instructions, paste your trading logic (e.g., SMC)
+- In Actions, paste your gpt-schema.yaml
+- Under API Base URL, enter your Render public URL (e.g., https://your-service.onrender.com)
+
+Done! You can now ask questions like:
+  "Analyze EURUSD using SMC and journal the trade"
+
+
+### 📦 Local Development (Optional)
 
 1. **Clone the repo**
 
@@ -130,17 +153,7 @@ cd chatgpt-smc-trading-assistant
 docker-compose up --build
 ```
 
-This launches both the FastAPI backend and ngrok tunnel.
-
-4. **Create the GPT frontend**
-
-In ChatGPT Plus:
-
-- Go to **Explore GPTs → Create**
-- In **Configure → Instructions**, paste content of `instructions.txt`
-- In **Actions → Schema**, paste content of `schemayaml.txt`
-- Save and start chatting with your GPT trading assistant
-
+But we recommend deploying it to the cloud for uninterrupted GPT access or ngrok to link the api to chatgpt.
 
 ---
 
